@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'fisheries_management',
     'corsheaders',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
