@@ -22,19 +22,19 @@ def insertMarina(request):
 @api_view(['GET'])
 def getMarina(request):
     marina = Marina.objects.all()
-    serializer = VehicleSerializer(marina, many=True)
+    serializer = MarinaSerializer(marina, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
 def getMarina_byId(request,Mid):
-    marina = Vehicle.objects.get(Mid=Mid)
-    serializer = VehicleSerializer(marina)
+    marina = Marina.objects.get(Mid=Mid)
+    serializer = MarinaSerializer(marina)
     return Response(serializer.data)
 
 @api_view(['PUT'])
 def updateMarina(request, Mid):
     marina = Marina.objects.get(Mid=Mid)
-    serializer = VehicleSerializer(marina, data=request.data)
+    serializer = MarinaSerializer(marina, data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
@@ -43,8 +43,8 @@ def updateMarina(request, Mid):
     
 @api_view(['DELETE'])
 def deleteMarina(request, Mid):
-    vehicle = Vehicle.objects.get(VId=VId)
-    vehicle.delete()
+    marina = Marina.objects.get(Mid=Mid)
+    marina.delete()
     return Response(status=204)
 
 # views for vehicle

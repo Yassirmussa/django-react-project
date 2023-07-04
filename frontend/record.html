@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fishing record</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <h1>Fisheries management system</h1>
+        </div>
+        <div class="menu">
+            <h1>Menu</h1>
+            <button onclick="location.href='dashboard.html'">Dashboard</button> <br/>
+            <button onclick="location.href='worksheet.html'">Worksheet</button> <br/>
+            <button onclick="location.href='listFishermen.html'">List of fishermen</button>
+            <button onclick="location.href='registerFishermen.html'">Register fishermen</button>
+            <button onclick="location.href='record.html'">Fishing record</button>
+        </div>
+        
+        <div class="main">
+        <table>
+            <thead>
+                <tr>
+                    <th>WId</th>
+                    <th>Date</th>
+                    <th>Specie</th>
+                    <th>Quantity</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="record">
+
+            </tbody>
+        </table>
+        </div>
+    </div>
+    <script>
+        fetch('http://localhost:8000/api/v1/getWorksheet')
+        .then(response => response.json())
+  .then(data => {
+    const tableBody = document.getElementById('record');
+
+    data.forEach(item => {
+      const row = document.createElement('tr');
+    //   'WId','VId','Fishspecie','quantity','Date','price'
+      row.innerHTML = `
+        <td>${item.WId}</td>
+        <td>${item.Date}</td>
+        <td>${item.Fishspecie}</td>
+        <td>${item.quantity}</td>
+        <td>
+            <button onclick="updateRecord(${item.WId})"> Update </button>
+            <button onclick="deleteRecord(${item.WId})">Delete</button>
+        </td>
+      `;
+      tableBody.appendChild(row);
+    });
+  })
+  function deleteRecord(WId) {
+            console.log(`Delete Fishermen with ID: ${WId}`);
+            // Add your delete logic here
+            
+            fetch(`http://localhost:8000/api/v1/deleteWorksheet/${WId}/`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                if (response.ok) {
+                    console.log('Record deleted successfully!');
+                    alert(`Record deleted successfully!`);
+                    // Remove the row from the table
+                    const row = document.getElementById(`row-${WId}`);
+                    row.remove();
+                } else {
+                    console.error('Error deleting Record');
+                }
+                })
+                .catch(error => {
+                console.error('Error:', error);
+                });
+            }
+    </script>
+</body>
+</html>

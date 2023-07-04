@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update marina</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="update">
+        <form id="updateForm">
+            <label for="mname">
+                Marina Name: <input type="text" name="Mname" id="mname"/> <br>
+            </label><br>
+            <label for="location">
+                Location: <input type="text" name="location" id="location"/>
+            </label><br>
+            <input type="submit" value="Update"/>
+        </form>
+    </div>
+
+    <script>
+        // Function to populate the form with existing data
+        function populateFormWithData(data) {
+            document.getElementById('mname').value = data.Mname;
+            document.getElementById('location').value = data.location;
+        }
+
+        // Function to handle form submission
+        function handleFormSubmit(event) {
+            event.preventDefault(); // Prevent form submission
+
+            var formData = new FormData(event.target);
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const Mid = urlParams.get('id');
+
+            fetch(`http://localhost:8000/api/v1/marina2/${Mid}/`, {
+                method: 'PUT',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Data updated successfully!');
+                    // Optionally, perform any additional actions after successful update
+                } else {
+                    console.error('Error updating data in API');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Retrieve the ID from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const FId = urlParams.get('id');
+
+        // Fetch data for the specific row to pre-populate the form
+        fetch(`http://localhost:8000/api/v1/getMarina/${FId}/`)
+            .then(response => response.json())
+            .then(data => {
+                populateFormWithData(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+        // Add form submission event listener
+        document.getElementById('updateForm').addEventListener('submit', handleFormSubmit);
+    </script>
+</body>
+</html>

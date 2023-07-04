@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>list of marina</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <h1>Fisheries management system</h1>
+        </div>
+        <div class="menu">
+            <h1>Menu</h1>
+            <button onclick="location.href='dashboard.html'">Dashboard</button> <br/>
+            <button onclick="location.href='registerMarina.html'">Register Marina</button> <br/>
+            <button onclick="location.href='marinaList.html'">List of Marina</button><br>
+            <button onclick="location.href='listFishermen.html'">List of fishermen</button> <br>
+            <button onclick="location.href='registerVehicle.html'">Register Vehicle</button><br>
+            <button onclick="location.href='vehiclelist.html'">List of Vehicle</button><br>
+            <button onclick="location.href='registerFishermen.html'">Register fishermen</button>
+            <button onclick="location.href='record.html'">Fishing record</button>
+
+        </div>
+       
+        <div class="main">
+            <table>
+            
+            <thead>
+                <tr>
+                <th>Sno</th>
+                <th>Marina Name</th>
+                <th>Location</th>
+                <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="listtable">
+            
+            </tbody>
+        
+            </table>
+        </div>
+    </div>
+<script>
+    fetch('http://localhost:8000/api/v1/getmarina')
+  .then(response => response.json())
+  .then(data => {
+    const tableBody = document.getElementById('listtable');
+
+    data.forEach(item => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${item.Mid}</td>
+        <td>${item.Mname}</td>
+        <td>${item.location}</td>
+        <td>
+            <button onclick="updateMarina(${item.Mid})"> Update </button>
+            <button onclick="deleteMarina(${item.Mid})">Delete</button>
+        </td>
+      `;
+      tableBody.appendChild(row);
+    });
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+
+  function updateMarina(Mid) {
+    location.href = `updatemarina.html?id=${Mid}`;
+         console.log(`Update row with ID: ${Mid}`);
+    }
+
+function deleteMarina(Mid) {
+  fetch(`http://localhost:8000/api/v1/deleteMarina/${Mid}/`, {
+    method: 'DELETE'
+  })
+    .then(response => {
+      if (response.ok) {
+        console.log('Marina deleted successfully!');
+        // Remove the row from the table
+        const row = document.getElementById(`row-${Mid}`);
+        row.remove();
+      } else {
+        console.error('Error deleting marina');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+</script>
+</body>
+</html>

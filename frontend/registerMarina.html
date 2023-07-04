@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <h1>Fisheries management system</h1>
+        </div>
+        <div class="menu">
+            <h1>Menu</h1>
+            <button onclick="location.href='dashboard.html'">Dashboard</button> <br/>
+            <button onclick="location.href='registerMarina.html'">Register Marina</button> <br/>
+            <button onclick="location.href='marinaList.html'">List of Marina</button><br>
+            <button onclick="location.href='listFishermen.html'">List of fishermen</button> <br>
+            <button onclick="location.href='registerVehicle.html'">Register Vehicle</button><br>
+            <button onclick="location.href='listVehicle.html'">List of Vehicle</button><br>
+            <button onclick="location.href='registerFishermen.html'">Register fishermen</button>
+            <button onclick="location.href='record.html'">Fishing record</button>
+
+        </div>
+       
+        <div class="main">
+        <form action="" id="marinaform" method="POST">
+            <label for="mname">
+                Mname: <input type="text" name="Mname"/>
+            </label>
+            <label for="location">
+                Location: <input type="text" name="location"/>
+            </label>
+            <input type="submit" value="Submit"/>
+        </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

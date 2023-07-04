@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>worksheet</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="worksheet">
+
+            
+            <div class="title" style="height: 20px; font-size: medium;">
+                <h1>Fisheries management system</h1>
+            </div>
+            <div class="menu" style="width: 23.7%; float: left;">
+                <h1>Menu</h1>
+                <button onclick="location.href='dashboard.html'">Dashboard</button> <br/>
+                <button onclick="location.href='worksheet.html'">Worksheet</button> <br/>
+                <button onclick="location.href='listFishermen.html'">List of fishermen</button>
+                <button onclick="location.href='registerFishermen.html'">Register fishermen</button>
+                <button onclick="location.href='record.html'">Fishing record</button>
+            </div>
+            
+            <div class="main" style="width: 69%;">
+                <form action='' id="worksheet" method='POST'>
+                    <select name="VId" id="VId">
+                        <option value="" disabled selected>Vehicle Name</option>
+                    </select><br/>
+                    Fish Specie<br/>
+                    <input type='text' name='Fishspecie' placeholder='Enter Fish specie'/><br/>
+                    quantity<br/>
+                    <input type='number' name='quantity' placeholder='Enter your quantity of specie'/><br/>
+                    Date<br/>
+                    <input type='date' name='Date' placeholder='Enter date of work'/><br/>
+                    Price<br/>
+                    <input type='number' name='price' placeholder='Enter your price of specie'/><br/><br/>
+                    <p id="message"></p>
+                    
+                    <button>Submit</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <script>
+         fetch('http://localhost:8000/api/v1/getvehicle')
+        .then(response => response.json())
+            .then(data => {
+                const marinaSelect = document.getElementById('VId');
+                data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.VId;
+                    option.textContent = item.VName;
+                    marinaSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        // Handle form submission
+        const form = document.getElementById('worksheet');
+        form.addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent form submission
+
+            const formData = new FormData(form);
+
+            fetch('http://localhost:8000/api/v1/insertWorksheet', {
+                method: 'POST',
+                body: JSON.stringify(Object.fromEntries(formData)),
+                headers: {
+                'Content-Type': 'application/json'
+                }
+      })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Record added successfully!');
+                    // Optionally, perform any additional actions after successful registration
+                    const message = document.getElementById('message');
+                    message.innerHTML="Record added successfully!"
+                    message.style.color="green"
+                } else {
+                    console.error('Error adding record');
+                    const message = document.getElementById('message');
+                    message.innerHTML="Error adding record!"
+                    message.style.color="red"
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+    </script>
+</body>
+</html>

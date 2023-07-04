@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update vehicle</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="update">
+        <form id="updateForm" action="" method="PUT">
+            <label for="Vehicle name">Vehicle name</label>
+            <input type="text" id="Vname" name="VName"><br>
+            <label for="vehicle Owner">Vehicle Owner</label>
+            <input type="text" id="vowner" name="VOwner"><br>
+            <label for="Ownerphone">Ownerphone</label>
+            <input type="number" id="phone" name="Ownerphone"><br>
+            <label for="Marina name">Marina Name</label>
+            <input type="text" name="MId" id="MId"> <br>
+            <label for="Password">Password</label>
+            <input type="text" id="Password" name="Password" ><br>
+            <label for="Confirm Password">Confirm Password</label>
+            <input type="text" id="C_password" name="C_password"><br>
+            <button type="submit">Update</button>
+        </form> 
+    </div>
+    <script>
+        // Function to populate the form with existing data
+        function populateFormWithData(data) {
+            document.getElementById('Vname').value = data.VName;
+            document.getElementById('vowner').value = data.VOwner;
+            document.getElementById('phone').value = data.Ownerphone;
+            document.getElementById('MId').value = data.marina.Mname;
+            document.getElementById('Password').value = data.Password;
+            document.getElementById('C_password').value = data.C_password;
+        }
+
+        // Function to handle form submission
+        function handleFormSubmit(event) {
+            event.preventDefault(); // Prevent form submission
+
+            var formData = new FormData(event.target);
+
+            fetch(`http://localhost:8000/api/v1/updateVehicle/${VId}/`, {
+                method: 'PUT',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Data updated successfully!');
+                    // Optionally, perform any additional actions after successful update
+                } else {
+                    console.error('Error updating data in API');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Retrieve the ID from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const VId = urlParams.get('id');
+
+        // Fetch data for the specific row to pre-populate the form
+        fetch(`http://localhost:8000/api/v1/getvehicle/${VId}/`)
+            .then(response => response.json())
+            .then(data => {
+                populateFormWithData(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+        // Add form submit event listener
+        const updateForm = document.getElementById('updateForm');
+        updateForm.addEventListener('submit', handleFormSubmit);
+
+    </script>
+</body>
+
+</html>

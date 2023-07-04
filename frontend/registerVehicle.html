@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Registration</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="container">
+       
+        <div class="register">
+            <form id="vehicleform">
+                <h1>Vehicle Registration</h1>
+                <label for="Vehicle name">Vehicle name</label>
+                <input type="text" id="Vname" name="VName" placeholder="Vehicle Name"><br>
+                <label for="vehicle Owner">Vehicle Owner</label>
+                <input type="text" id="vowner" name="VOwner" placeholder="Vehicle Owner"><br>
+                <label for="Ownerphone">Ownerphone</label>
+                <input type="number" id="phone" name="Ownerphone"><br>
+                <label for="Marina name">Marina Name</label>
+                <select id="MId" name="MId">
+                    <option value="" disabled selected>Select Marina</option>
+                </select><br>
+                <label for="Password">Password</label>
+                <input type="password" id="Password" name="Password" placeholder="Your Password"><br>
+                <label for="Confirm Password">Confirm Password</label>
+                <input type="password" id="C_password" name="C_password" placeholder="Rewrite your Password"><br>
+                <p id="match"></p>
+                <p id="message"></p>
+                <button type="submit">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Fetch and populate marina names
+        fetch('http://localhost:8000/api/v1/getmarina')
+            .then(response => response.json())
+            .then(data => {
+                const marinaSelect = document.getElementById('MId');
+                data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.Mid;
+                    option.textContent = item.Mname;
+                    marinaSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+        // Handle form submission
+        const form = document.getElementById('vehicleform');
+        form.addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent form submission
+
+            const password = document.getElementById('Password').value;
+            const confirmPassword = document.getElementById('C_password').value;
+
+            if (password !== confirmPassword) {
+                // console.error('Password and Confirm Password do not match');
+                const match = document.getElementById('match');
+                match.innerHTML="Password and Confirm Password do not match";
+                match.style.color="red"
+                return;
+            }
+
+            const formData = new FormData(form);
+
+            fetch('http://localhost:8000/api/v1/vehicle', {
+                method: 'POST',
+                body: JSON.stringify(Object.fromEntries(formData)),
+                headers: {
+                'Content-Type': 'application/json'
+                }
+      })
+            .then(response => {
+                if (response.ok) {
+                    // console.log('Vehicle registered successfully!');
+                    const message = document.getElementById('message');
+                    message.innerHTML="Vehicle registered successfully!"
+                    message.style.color="green"
+                    // Optionally, perform any additional actions after successful registration
+                } else {
+                    // console.error('Error registering vehicle');
+                    const message = document.getElementById('message');
+                    message.innerHTML="Error registering vehicle";
+                    message.style.color="red";
+                }
+            })
+            .catch(error => {
+                
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>

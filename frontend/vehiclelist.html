@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle List</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <h1>Fisheries management system</h1>
+        </div>
+        <div class="menu">
+            <h1>Menu</h1>
+            <button onclick="location.href='dashboard.html'">Dashboard</button> <br/>
+            <button onclick="location.href='registerMarina.html'">Register Marina</button> <br/>
+            <button onclick="location.href='marinaList.html'">List of Marina</button><br>
+            <button onclick="location.href='listFishermen.html'">List of fishermen</button> <br>
+            <button onclick="location.href='registerVehicle.html'">Register Vehicle</button><br>
+            <button onclick="location.href='vehiclelist.html'">List of Vehicle</button><br>
+            <button onclick="location.href='registerFishermen.html'">Register fishermen</button>
+            <button onclick="location.href='record.html'">Fishing record</button>
+
+        </div>
+       
+        <div class="main">
+
+        <div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Owner</th>
+                    <th>Phone Number</th>
+                    <th>Password</th>
+                    <th>Marina</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="vehiclelist">
+            
+            </tbody>
+        </table>
+    </div>
+    <script>
+        fetch('http://localhost:8000/api/v1/getvehicle')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('vehiclelist');
+
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.VId}</td>
+                        <td>${item.VName}</td>
+                        <td>${item.VOwner}</td>
+                        <td>${item.Ownerphone}</td>
+                        <td>${item.Password}</td>
+                        <td>${item.marina.Mname}</td>
+                        <td>
+                            <button onclick="updateVehicle(${item.VId})">Update</button>
+                            <button onclick="deleteVehicle(${item.VId})">Delete</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+        function updateVehicle(VId) {
+            console.log(`Update vehicle with ID: ${VId}`);
+            // Add your update logic here
+            location.href=`updatevehicle.html?id=${VId}`
+        }
+
+        function deleteVehicle(VId) {
+            console.log(`Delete vehicle with ID: ${VId}`);
+            // Add your delete logic here
+            
+            fetch(`http://localhost:8000/api/v1/deleteVehicle/${VId}/`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                if (response.ok) {
+                    console.log('Marina deleted successfully!');
+                    // Remove the row from the table
+                    const row = document.getElementById(`row-${VId}`);
+                    row.remove();
+                } else {
+                    console.error('Error deleting marina');
+                }
+                })
+                .catch(error => {
+                console.error('Error:', error);
+                });
+            }
+    </script>
+</body>
+</html>

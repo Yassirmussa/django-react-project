@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>list of fishermen</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <h1>Fisheries management system</h1>
+        </div>
+        <div class="menu">
+            <h1>Menu</h1>
+            <button onclick="location.href='dashboard.html'">Dashboard</button> <br/>
+            <button onclick="location.href='worksheet.html'">Worksheet</button> <br/>
+            <button onclick="location.href='listFishermen.html'">List of fishermen</button>
+            <button onclick="location.href='registerFishermen.html'">Register fishermen</button>
+            <button onclick="location.href='record.html'">Fishing record</button>
+        </div>
+        
+        <div class="main">
+        <table>
+            <thead>
+                <tr>
+                    <th>FId</th>
+                    <th>Fishermen Name</th>
+                    <th>Address</th>
+                    <th>Phonenumber</th>
+                    <th>Vehicle</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="fishermenlist">
+
+            </tbody>
+        </table>
+        </div>
+    </div>
+    <script>
+        fetch('http://localhost:8000/api/v1/getFishermen')
+        .then(response => response.json())
+  .then(data => {
+    const tableBody = document.getElementById('fishermenlist');
+
+    data.forEach(item => {
+      const row = document.createElement('tr');
+    //   'FName','Address','Phonenumber','VId'
+      row.innerHTML = `
+        <td>${item.FId}</td>
+        <td>${item.FName}</td>
+        <td>${item.Address}</td>
+        <td>${item.Phonenumber}</td>
+        <td>${item.vehicle.VName}</td>
+        <td>
+            <button onclick="updateFishermen(${item.FId})"> Update </button>
+            <button onclick="deleteFishermen(${item.FId})">Delete</button>
+        </td>
+      `;
+      tableBody.appendChild(row);
+    });
+  })
+function updateFishermen(FId){
+    location.href=`updatefishermen.html?id=${FId}`
+}
+
+  function deleteFishermen(FId) {
+            console.log(`Delete Fishermen with ID: ${FId}`);
+            // Add your delete logic here
+            
+            fetch(`http://localhost:8000/api/v1/deleteFishermen/${FId}/`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                if (response.ok) {
+                    console.log('Marina deleted successfully!');
+                    // Remove the row from the table
+                    const row = document.getElementById(`row-${FId}`);
+                    row.remove();
+                } else {
+                    console.error('Error deleting marina');
+                }
+                })
+                .catch(error => {
+                console.error('Error:', error);
+                });
+            }
+
+    </script>
+    
+</body>
+</html>

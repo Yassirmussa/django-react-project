@@ -90,8 +90,11 @@ DATABASES = {
 }
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',  # Add your frontend's URL here
+    
     # Add other allowed origins as needed
 ]
+CORS_ORIGIN_ALLOW_ALL = True
+
 
 
 # Password validation
